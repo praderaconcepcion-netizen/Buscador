@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Precios Interno</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { text-align: center; color: #2c3e50; font-size: 24px; margin-bottom: 20px; }
+        .search-box { width: 100%; padding: 15px; font-size: 16px; border: 2px solid #bdc3c7; border-radius: 8px; margin-bottom: 20px; outline: none; transition: border 0.3s; }
+        .search-box:focus { border-color: #3498db; }
+        .results-count { font-size: 14px; color: #7f8c8d; margin-bottom: 10px; text-align: right; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 12px; border-left: 5px solid #3498db; }
+        .card-title { font-weight: bold; font-size: 16px; color: #2c3e50; margin-bottom: 5px; }
+        .card-meta { display: flex; justify-content: space-between; font-size: 14px; color: #7f8c8d; }
+        .price { color: #27ae60; font-weight: bold; font-size: 16px; }
+        .no-results { text-align: center; color: #95a5a6; margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🔍 Buscador de Productos</h1>
+    <input type="text" id="buscador" class="search-box" placeholder="Escribe código o nombre del producto..." autofocus>
+    <div id="contador" class="results-count"></div>
+    <div id="lista-productos"></div>
+</div>
+
+<script src="productos.js"></script>
+<script>
+    const buscador = document.getElementById('buscador');
+    const lista = document.getElementById('lista-productos');
+    const contador = document.getElementById('contador');
+
+    function renderizarProductos(listaFiltrada) {
+        lista.innerHTML = '';
+        contador.textContent = `${listaFiltrada.length} productos encontrados`;
+
+        if (listaFiltrada.length === 0) {
+            lista.innerHTML = '<p class="no-results">No se encontraron productos.</p>';
+            return;
+        }
+
+        listaFiltrada.forEach(prod => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="card-title">${prod.nombre}</div>
+                <div class="card-meta">
+                    <span>Código: <strong>${prod.codigo}</strong></span>
+                    <span class="price">$${prod.precio.toFixed(2)}</span>
+                </div>
+            `;
+            lista.appendChild(card);
+        });
+    }
+
+    // Buscador inteligente en tiempo real
+    buscador.addEventListener('input', (e) => {
+        const termino = e.target.value.toLowerCase().trim();
+        
+        if (termino === '') {
+            lista.innerHTML = '';
+            contador.textContent = 'Escribe algo para buscar...';
+            return;
+        }
+
+        const filtrados = productos.filter(prod => {
+            return prod.nombre.toLowerCase().includes(termino) || 
+                   prod.codigo.toLowerCase().includes(termino);
+        });
+
+        renderizarProductos(filtrados);
+    });
+
+    // Estado inicial vacío para no saturar la pantalla
+    contador.textContent = 'Esperando búsqueda...';
+</script>
+
+</body>
+</html>
