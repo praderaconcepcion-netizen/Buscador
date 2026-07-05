@@ -3,81 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscador de Precios Interno</title>
+    <title>Buscador de Precios</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; }
-        h1 { text-align: center; color: #2c3e50; font-size: 24px; margin-bottom: 20px; }
-        .search-box { width: 100%; padding: 15px; font-size: 16px; border: 2px solid #bdc3c7; border-radius: 8px; margin-bottom: 20px; outline: none; transition: border 0.3s; }
-        .search-box:focus { border-color: #3498db; }
-        .results-count { font-size: 14px; color: #7f8c8d; margin-bottom: 10px; text-align: right; }
-        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 12px; border-left: 5px solid #3498db; }
-        .card-title { font-weight: bold; font-size: 16px; color: #2c3e50; margin-bottom: 5px; }
-        .card-meta { display: flex; justify-content: space-between; font-size: 14px; color: #7f8c8d; }
-        .price { color: #27ae60; font-weight: bold; font-size: 16px; }
-        .no-results { text-align: center; color: #95a5a6; margin-top: 30px; }
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 15px;
+        }
+
+        .contenedor {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.6rem;
+            color: #1e293b;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .busqueda-contenedor {
+            position: sticky;
+            top: 0;
+            background-color: #f4f6f9;
+            padding: 5px 0 15px 0;
+            z-index: 100;
+        }
+
+        #txtBuscar {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            outline: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        #txtBuscar:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px -1px rgba(59, 130, 246, 0.15);
+        }
+
+        .lista-productos {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tarjeta-producto {
+            background-color: #ffffff;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .codigo {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nombre {
+            font-size: 1.05rem;
+            color: #0f172a;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .precio {
+            font-size: 1.2rem;
+            color: #059669; /* Color verde éxito */
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        .contador {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .sin-resultados {
+            text-align: center;
+            color: #64748b;
+            padding: 40px 20px;
+            font-size: 1rem;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>🔍 Buscador de Productos</h1>
-    <input type="text" id="buscador" class="search-box" placeholder="Escribe código o nombre del producto..." autofocus>
-    <div id="contador" class="results-count"></div>
-    <div id="lista-productos"></div>
-</div>
-
-<script src="productos.js"></script>
-<script>
-    const buscador = document.getElementById('buscador');
-    const lista = document.getElementById('lista-productos');
-    const contador = document.getElementById('contador');
-
-    function renderizarProductos(listaFiltrada) {
-        lista.innerHTML = '';
-        contador.textContent = `${listaFiltrada.length} productos encontrados`;
-
-        if (listaFiltrada.length === 0) {
-            lista.innerHTML = '<p class="no-results">No se encontraron productos.</p>';
-            return;
-        }
-
-        listaFiltrada.forEach(prod => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div class="card-title">${prod.nombre}</div>
-                <div class="card-meta">
-                    <span>Código: <strong>${prod.codigo}</strong></span>
-                    <span class="price">$${prod.precio.toFixed(2)}</span>
-                </div>
-            `;
-            lista.appendChild(card);
-        });
-    }
-
-    // Buscador inteligente en tiempo real
-    buscador.addEventListener('input', (e) => {
-        const termino = e.target.value.toLowerCase().trim();
+    <div class="contenedor">
+        <h1>Buscador de Productos</h1>
         
-        if (termino === '') {
-            lista.innerHTML = '';
-            contador.textContent = 'Escribe algo para buscar...';
-            return;
+        <div class="busqueda-contenedor">
+            <input type="text" id="txtBuscar" placeholder="Buscar por nombre o código..." autocomplete="off">
+        </div>
+
+        <div class="contador" id="lblContador">Cargando productos...</div>
+        
+        <div class="lista-productos" id="listaProductos">
+            </div>
+    </div>
+
+    <script src="productos.js"></script>
+
+    <script>
+        const txtBuscar = document.getElementById('txtBuscar');
+        const listaProductos = document.getElementById('listaProductos');
+        const lblContador = document.getElementById('lblContador');
+
+        // Función encargada de pintar los productos en pantalla
+        function renderizarProductos(productosFiltrados) {
+            listaProductos.innerHTML = '';
+            
+            if (productosFiltrados.length === 0) {
+                listaProductos.innerHTML = '<div class="sin-resultados">No se encontraron productos coincidentes.</div>';
+                lblContador.textContent = '0 productos encontrados';
+                return;
+            }
+
+            lblContador.textContent = `${productosFiltrados.length} productos encontrados`;
+
+            productosFiltrados.forEach(item => {
+                const tarjeta = document.createElement('div');
+                tarjeta.className = 'tarjeta-producto';
+                
+                // Conversión segura a número para aplicar los dos decimales de quetzales
+                const precioNumerico = Number(item.precio) || 0;
+
+                tarjeta.innerHTML = `
+                    <div class="codigo">${item.codigo}</div>
+                    <div class="nombre">${item.nombre}</div>
+                    <div class="precio">Q ${precioNumerico.toFixed(2)}</div>
+                `;
+                listaProductos.appendChild(tarjeta);
+            });
         }
 
-        const filtrados = productos.filter(prod => {
-            return prod.nombre.toLowerCase().includes(termino) || 
-                   prod.codigo.toLowerCase().includes(termino);
+        // Filtro inteligente en tiempo real (busca tanto en nombre como en código)
+        txtBuscar.addEventListener('input', (e) => {
+            const termino = e.target.value.toLowerCase().trim();
+            
+            if (!window.productos) {
+                lblContador.textContent = 'Error: No se encontró la base de datos de productos.';
+                return;
+            }
+
+            const filtrados = productos.filter(item => {
+                const nombreMatch = item.nombre ? item.nombre.toLowerCase().includes(termino) : false;
+                const codigoMatch = item.codigo ? item.codigo.toLowerCase().includes(termino) : false;
+                return nombreMatch || codigoMatch;
+            });
+
+            renderizarProductos(filtrados);
         });
 
-        renderizarProductos(filtrados);
-    });
-
-    // Estado inicial vacío para no saturar la pantalla
-    contador.textContent = 'Esperando búsqueda...';
-</script>
-
+        // Inicializar la pantalla con los primeros productos al cargar la web
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.productos) {
+                // Muestra los primeros 30 productos para no saturar el celular al abrir la app
+                renderizarProductos(productos.slice(0, 30)); 
+            } else {
+                lblContador.textContent = 'Error al cargar productos.js';
+            }
+        });
+    </script>
 </body>
 </html>
