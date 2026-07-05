@@ -89,7 +89,7 @@
 
         .precio {
             font-size: 1.2rem;
-            color: #059669; /* Color verde éxito */
+            color: #059669; 
             font-weight: 700;
             margin-top: 4px;
         }
@@ -121,8 +121,7 @@
 
         <div class="contador" id="lblContador">Cargando productos...</div>
         
-        <div class="lista-productos" id="listaProductos">
-            </div>
+        <div class="lista-productos" id="listaProductos"></div>
     </div>
 
     <script src="productos.js"></script>
@@ -132,7 +131,6 @@
         const listaProductos = document.getElementById('listaProductos');
         const lblContador = document.getElementById('lblContador');
 
-        // Función encargada de pintar los productos en pantalla
         function renderizarProductos(productosFiltrados) {
             listaProductos.innerHTML = '';
             
@@ -148,7 +146,6 @@
                 const tarjeta = document.createElement('div');
                 tarjeta.className = 'tarjeta-producto';
                 
-                // Conversión segura a número para aplicar los dos decimales de quetzales
                 const precioNumerico = Number(item.precio) || 0;
 
                 tarjeta.innerHTML = `
@@ -160,11 +157,12 @@
             });
         }
 
-        // Filtro inteligente en tiempo real (busca tanto en nombre como en código)
+        // Búsqueda en tiempo real corregida
         txtBuscar.addEventListener('input', (e) => {
             const termino = e.target.value.toLowerCase().trim();
             
-            if (!window.productos) {
+            // Verificación directa y segura de la variable
+            if (typeof productos === 'undefined') {
                 lblContador.textContent = 'Error: No se encontró la base de datos de productos.';
                 return;
             }
@@ -178,10 +176,9 @@
             renderizarProductos(filtrados);
         });
 
-        // Inicializar la pantalla con los primeros productos al cargar la web
+        // Inicialización nativa corregida para evitar falsos errores
         window.addEventListener('DOMContentLoaded', () => {
-            if (window.productos) {
-                // Muestra los primeros 30 productos para no saturar el celular al abrir la app
+            if (typeof productos !== 'undefined') {
                 renderizarProductos(productos.slice(0, 30)); 
             } else {
                 lblContador.textContent = 'Error al cargar productos.js';
