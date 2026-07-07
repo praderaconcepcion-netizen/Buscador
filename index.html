@@ -210,14 +210,43 @@
             display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
 
-        /* CUADRO INFORMATIVO DE IA INTERNO */
+        /* NUEVO BOTÓN PARA SOLICITAR LA IA */
+        .btn-consultar-ia {
+            width: 100%;
+            background-color: var(--xiaomi-orange);
+            color: var(--white);
+            border: none;
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(255, 103, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn-consultar-ia:active {
+            transform: scale(0.98);
+            background-color: #E65C00;
+        }
+
+        /* CUADRO INFORMATIVO DE IA INTERNO (Oculto al inicio) */
         .contenedor-ia {
+            display: none; /* Se activa mediante JavaScript */
             background-color: #FFF8F3;
             border: 1px solid #FFE0CC;
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 20px;
+            animation: fadeIn 0.3s ease;
         }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
         .ia-header {
             display: flex;
@@ -233,12 +262,12 @@
             font-size: 0.92rem;
             line-height: 1.5;
             color: #444444;
-            white-space: pre-line; /* Mantiene los saltos de línea de la IA */
+            white-space: pre-line;
         }
 
         .seccion-titulo-stock {
             font-size: 0.9rem; font-weight: 700; color: var(--xiaomi-grey);
-            margin-bottom: 10px; text-transform: uppercase;
+            margin-bottom: 10px; text-transform: uppercase; margin-top: 5px;
         }
 
         /* TIENDAS */
@@ -284,7 +313,11 @@
                 <button class="btn-cerrar" onclick="cerrarModal()">&times;</button>
             </div>
             
-            <div class="contenedor-ia">
+            <button class="btn-consultar-ia" id="btnDispararIA">
+                <span>✨</span> Ver Características con IA
+            </button>
+
+            <div class="contenedor-ia" id="bloqueIA">
                 <div class="ia-header">
                     <span>✨</span> Ficha Técnica Inteligente (Xiaomi Global)
                 </div>
@@ -304,15 +337,25 @@
         const lblContador = document.getElementById('lblContador');
         const modalStock = document.getElementById('modalStock');
         const modalDesgloseStock = document.getElementById('modalDesgloseStock');
+        
+        // Elementos nuevos de la IA
+        const btnDispararIA = document.getElementById('btnDispararIA');
+        const bloqueIA = document.getElementById('bloqueIA');
         const txtFichaIA = document.getElementById('txtFichaIA');
 
-        // LLAVE PÚBLICA DE LA API DE GEMINI (Configurada para acceso rápido)
-        const GEMINI_API_KEY = "AIzaSyD" + "v0_gZtA8I" + "oA6P5r7R" + "7LqLzIe" + "7g9h8mU0"; 
+        // TU CLAVE DE API INTEGRADA Y ACTIVA
+        const GEMINI_API_KEY = "AQ.Ab8RN6JzICbgd-7KswmHY40g_85pZlYJDx8VKwfgTHGlCO0SvQ"; 
 
-        async function pedirFichaTecnicaIA(nombreProducto) {
+        // Variable global temporal para recordar qué producto está abierto
+        let productoSeleccionadoActual = "";
+
+        async function pedirFichaTecnicaIA() {
+            // Mostramos el contenedor y cargamos el estado de espera
+            bloqueIA.style.display = "block";
+            btnDispararIA.style.display = "none"; // Ocultamos el botón para evitar doble clic
             txtFichaIA.innerHTML = "<i style='color:#888;'>Buscando en servidores de Xiaomi...</i>";
             
-            const prompt = `Actúa como asesor experto de Xiaomi. Genera un resumen técnico ultra-rápido y estructurado para el producto "${nombreProducto}". 
+            const prompt = `Actúa como asesor experto de Xiaomi. Genera un resumen técnico ultra-rápido y estructurado para el producto "${productoSeleccionadoActual}". 
             REGLAS IMPORTANTES:
             1. Usa EXCLUSIVAMENTE información de páginas oficiales de Xiaomi (mi.com) para evitar errores. Si es un accesorio o producto genérico de otra marca, indícalo brevemente.
             2. Estructura la respuesta EXACTAMENTE así usando guiones cortos:
@@ -333,13 +376,16 @@
                 const datos = await respuesta.json();
                 let resultado = datos.candidates[0].content.parts[0].text;
                 
-                // Limpieza de asteriscos tipográficos que a veces manda la IA
                 resultado = resultado.replace(/\*\*/g, "").replace(/\*/g, "•");
                 txtFichaIA.textContent = resultado;
             } catch (error) {
-                txtFichaIA.textContent = "No se pudieron precargar las especificaciones de este artículo. Por favor, consulta el catálogo impreso.";
+                txtFichaIA.textContent = "No se pudieron precargar las especificaciones oficiales de este modelo.";
+                btnDispararIA.style.display = "flex"; // Si falla, dejamos volver a intentar
             }
         }
+
+        // Escuchador del botón IA
+        btnDispararIA.onclick = pedirFichaTecnicaIA;
 
         function renderizarProductos(lista) {
             listaProductos.innerHTML = '';
@@ -355,13 +401,16 @@
                 tarjeta.className = 'tarjeta-producto';
                 
                 tarjeta.onclick = () => {
-                    const nombreProducto = item.nombre;
-                    document.getElementById('modalCodigo').textContent = item.codigo;
-                    document.getElementById('modalNombre').textContent = nombreProducto;
-                    document.getElementById('modalPrecio').textContent = `Q ${(Number(item.precio)||0).toFixed(2)}`;
+                    productoSeleccionadoActual = item.nombre;
                     
-                    // Dispara la búsqueda interna en la API en tiempo real
-                    pedirFichaTecnicaIA(nombreProducto);
+                    // Reseteamos el estado de los componentes de IA al abrir una tarjeta nueva
+                    bloqueIA.style.display = "none";
+                    btnDispararIA.style.display = "flex";
+                    txtFichaIA.textContent = "";
+
+                    document.getElementById('modalCodigo').textContent = item.codigo;
+                    document.getElementById('modalNombre').textContent = productoSeleccionadoActual;
+                    document.getElementById('modalPrecio').textContent = `Q ${(Number(item.precio)||0).toFixed(2)}`;
 
                     const tiendas = [
                         { id: 'totalStock', nombre: 'Disponibilidad Global Total', esp: false },
