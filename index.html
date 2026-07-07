@@ -210,10 +210,10 @@
             display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
 
-        /* BOTÓN IA */
-        .btn-consultar-ia {
+        /* BOTÓN DE ENLACE DIRECTO COMPATIBLE CON GITHUB */
+        .btn-consultar-web {
             width: 100%;
-            background-color: var(--xiaomi-orange);
+            background: linear-gradient(135deg, #FF6700 0%, #FF8533 100%);
             color: var(--white);
             border: none;
             padding: 14px;
@@ -225,41 +225,14 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 12px rgba(255, 103, 0, 0.2);
-            transition: all 0.2s ease;
-        }
-
-        .btn-consultar-ia:active { transform: scale(0.98); }
-
-        /* CUADRO INFORMATIVO DE IA INTERNO */
-        .contenedor-ia {
-            display: none;
-            background-color: #FFF8F3;
-            border: 1px solid #FFE0CC;
-            border-radius: 16px;
-            padding: 16px;
             margin-bottom: 20px;
-            animation: fadeIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 103, 0, 0.25);
+            transition: all 0.2s ease;
+            text-decoration: none; /* Quita el subrayado de enlace */
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-
-        .ia-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--xiaomi-orange);
-            margin-bottom: 8px;
-        }
-
-        .ia-texto {
-            font-size: 0.92rem;
-            line-height: 1.5;
-            color: #444444;
-            white-space: pre-line;
+        .btn-consultar-web:active {
+            transform: scale(0.98);
         }
 
         .seccion-titulo-stock {
@@ -310,16 +283,9 @@
                 <button class="btn-cerrar" onclick="cerrarModal()">&times;</button>
             </div>
             
-            <button class="btn-consultar-ia" id="btnDispararIA">
-                <span>✨</span> Ver Características con IA
-            </button>
-
-            <div class="contenedor-ia" id="bloqueIA">
-                <div class="ia-header">
-                    <span>✨</span> Ficha Técnica Inteligente (Xiaomi Global)
-                </div>
-                <div class="ia-texto" id="txtFichaIA">Consultando especificaciones oficiales...</div>
-            </div>
+            <a href="#" target="_blank" class="btn-consultar-web" id="btnVerFicha">
+                <span>🌐</span> Ver Características en Xiaomi Oficial
+            </a>
 
             <div class="seccion-titulo-stock">Existencias por Tienda</div>
             <div id="modalDesgloseStock"></div>
@@ -334,63 +300,7 @@
         const lblContador = document.getElementById('lblContador');
         const modalStock = document.getElementById('modalStock');
         const modalDesgloseStock = document.getElementById('modalDesgloseStock');
-        
-        const btnDispararIA = document.getElementById('btnDispararIA');
-        const bloqueIA = document.getElementById('bloqueIA');
-        const txtFichaIA = document.getElementById('txtFichaIA');
-
-        // TRUCO DE SEGURIDAD: Dividimos tu clave en partes para engañar al robot de GitHub
-        const p1 = "AQ.Ab8RN6Ks8xa";
-        const p2 = "2yD9IK-rVtX74I8E";
-        const p3 = "OfhdKNQwGPsMCXjOPJoCRKQ";
-        const GEMINI_API_KEY = p1 + p2 + p3; // Se une de forma nativa en el navegador
-
-        let productoSeleccionadoActual = "";
-
-        function generarFichaLocalRespaldo(nombre) {
-            let n = nombre.toLowerCase();
-            let msg = `• Producto: ${nombre}\n• Tipo: Accesorio / Dispositivo Oficial Xiaomi\n• Origen: Especificaciones de Catálogo Mi Global\n\n💡 Tip de Venta: Ofrece garantía directa en tienda y resalta la excelente relación calidad-precio característica de Xiaomi.`;
-            
-            if(n.includes("note") || n.includes("pro") || n.includes("phone") || n.includes("redmi")){
-                msg = `• Pantalla: Alta definición, panel optimizado con protección visual.\n• Procesador: Chipset eficiente de última generación para multitarea.\n• Cámara: Lente principal optimizado para fotos nítidas en luz de día.\n• Batería: Larga duración compatible con carga rápida inteligente Xiaomi.\n\n💡 Tip de Venta: Destaca la fluidez del sistema y el almacenamiento ideal para redes sociales y aplicaciones de trabajo.`;
-            } else if(n.includes("watch") || n.includes("band") || n.includes("reloj")) {
-                msg = `• Pantalla: Panel táctil brillante de fácil lectura en exteriores.\n• Sensores: Monitoreo de ritmo cardíaco, pasos y calidad de sueño.\n• Batería: Autonomía de larga duración (varios días por carga).\n• Conectividad: Enlace bluetooth compatible con cualquier Android y iPhone.\n\n💡 Tip de Venta: Ideal para clientes que buscan cuidar su salud y recibir notificaciones sin sacar el teléfono.`;
-            }
-            txtFichaIA.textContent = msg;
-        }
-
-        async function pedirFichaTecnicaIA() {
-            bloqueIA.style.display = "block";
-            btnDispararIA.style.display = "none"; 
-            txtFichaIA.innerHTML = "<i style='color:#888;'>Buscando en servidores de Xiaomi...</i>";
-            
-            const prompt = `Genera un resumen técnico estructurado para el producto "${productoSeleccionadoActual}". Prioriza fuentes oficiales mi.com. Usa guiones: 
-            - Pantalla/Tipo: (especificación)
-            - Procesador/Motor: (modelo)
-            - Cámara/Lente: (principal)
-            - Batería/Carga: (capacidad)
-            💡 Tip de Venta: (argumento corto).`;
-
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-                const respuesta = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-                
-                if(!respuesta.ok) throw new Error("Error API");
-
-                const datos = await respuesta.json();
-                let resultado = datos.candidates[0].content.parts[0].text;
-                resultado = resultado.replace(/\*\*/g, "").replace(/\*/g, "•");
-                txtFichaIA.textContent = resultado;
-            } catch (error) {
-                generarFichaLocalRespaldo(productoSeleccionadoActual);
-            }
-        }
-
-        btnDispararIA.onclick = pedirFichaTecnicaIA;
+        const btnVerFicha = document.getElementById('btnVerFicha');
 
         function renderizarProductos(lista) {
             listaProductos.innerHTML = '';
@@ -406,15 +316,15 @@
                 tarjeta.className = 'tarjeta-producto';
                 
                 tarjeta.onclick = () => {
-                    productoSeleccionadoActual = item.nombre;
+                    const nombreProducto = item.nombre;
                     
-                    bloqueIA.style.display = "none";
-                    btnDispararIA.style.display = "flex";
-                    txtFichaIA.textContent = "";
-
                     document.getElementById('modalCodigo').textContent = item.codigo;
-                    document.getElementById('modalNombre').textContent = productoSeleccionadoActual;
+                    document.getElementById('modalNombre').textContent = nombreProducto;
                     document.getElementById('modalPrecio').textContent = `Q ${(Number(item.precio)||0).toFixed(2)}`;
+
+                    // Creamos el comando de búsqueda de ingeniería inversa (Filtra solo el dominio de Xiaomi)
+                    const busquedaFiltrada = encodeURIComponent(`site:mi.com Xiaomi ${nombreProducto}`);
+                    btnVerFicha.href = `https://www.google.com/search?q=${busquedaFiltrada}`;
 
                     const tiendas = [
                         { id: 'totalStock', nombre: 'Disponibilidad Global Total', esp: false },
