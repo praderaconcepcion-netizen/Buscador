@@ -42,12 +42,11 @@
             margin-bottom: 20px;
         }
 
-        /* Isotipo Xiaomi Naranja */
         .logo-mi {
             width: 38px;
             height: 38px;
             background-color: var(--xiaomi-orange);
-            border-radius: 12px; /* Superellipse de Xiaomi */
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -83,7 +82,7 @@
             padding: 16px 24px;
             font-size: 1rem;
             border: 1px solid #E0E0E0;
-            border-radius: 30px; /* Bordes redondeados Xiaomi */
+            border-radius: 30px;
             background-color: var(--white);
             box-shadow: 0 6px 20px rgba(0,0,0,0.06);
             outline: none;
@@ -104,7 +103,7 @@
             font-weight: 500;
         }
 
-        /* TARJETAS DE PRODUCTO (MI HOME INTERFACE) */
+        /* TARJETAS DE PRODUCTO */
         .lista-productos {
             display: flex;
             flex-direction: column;
@@ -175,7 +174,7 @@
         .con-stock { background-color: #E8F5E9; color: #2E7D32; }
         .sin-stock { background-color: #FFEBEE; color: #C62828; }
 
-        /* VENTANA MODAL FLOTANTE (MIUI / HYPEROS STYLE) */
+        /* VENTANA MODAL FLOTANTE */
         .modal {
             display: none;
             position: fixed;
@@ -209,7 +208,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-bottom: 1px solid #F0F0F0;
             padding-bottom: 16px;
         }
@@ -227,6 +226,45 @@
             cursor: pointer;
         }
 
+        /* BOTÓN DE INTELIGENCIA ARTIFICIAL GEMINI */
+        .btn-ia-gemini {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background: linear-gradient(135deg, #FF6700 0%, #FF8533 100%);
+            color: var(--white);
+            border: none;
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 103, 0, 0.25);
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-ia-gemini:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 6px rgba(255, 103, 0, 0.15);
+        }
+
+        .icon-ia {
+            font-size: 1.2rem;
+        }
+
+        .seccion-titulo-stock {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--xiaomi-grey);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         /* LISTA DE EXISTENCIAS INTERIOR */
         .tienda-item {
             display: flex;
@@ -241,7 +279,6 @@
         .tienda-nombre { font-weight: 500; color: #444444; }
         .tienda-cant { font-weight: 700; color: var(--xiaomi-dark); }
 
-        /* Resalte para Bodega Principal */
         .bodega-principal {
             background-color: #FFF3E0;
             border-radius: 14px;
@@ -274,10 +311,16 @@
                 <div>
                     <span class="codigo" id="modalCodigo"></span>
                     <div class="modal-titulo" id="modalNombre"></div>
-                    <div class="precio" id="modalPrecio" style="text-align: left; margin-top: 8px; color: var(--xiaomi-orange);"></div>
+                    <div class="precio" id="modalPrecio" style="text-align: left; margin-top: 8px; color: var(--xiaomi-orange);"></div >
                 </div>
                 <button class="btn-cerrar" onclick="cerrarModal()">&times;</button>
             </div>
+            
+            <a href="#" target="_blank" id="btnConsultarIA" class="btn-ia-gemini">
+                <span class="icon-ia">✨</span> Ver Ficha Técnica con IA
+            </a>
+
+            <div class="seccion-titulo-stock">Existencias por Tienda</div>
             <div id="modalDesgloseStock"></div>
         </div>
     </div>
@@ -290,6 +333,7 @@
         const lblContador = document.getElementById('lblContador');
         const modalStock = document.getElementById('modalStock');
         const modalDesgloseStock = document.getElementById('modalDesgloseStock');
+        const btnConsultarIA = document.getElementById('btnConsultarIA');
 
         function renderizarProductos(lista) {
             listaProductos.innerHTML = '';
@@ -304,13 +348,22 @@
                 const tarjeta = document.createElement('div');
                 tarjeta.className = 'tarjeta-producto';
                 
-                // Evento al presionar la tarjeta
                 tarjeta.onclick = () => {
+                    const nombreProducto = item.nombre;
                     document.getElementById('modalCodigo').textContent = item.codigo;
-                    document.getElementById('modalNombre').textContent = item.nombre;
+                    document.getElementById('modalNombre').textContent = nombreProducto;
                     document.getElementById('modalPrecio').textContent = `Q ${(Number(item.precio)||0).toFixed(2)}`;
                     
-                    // Listado de tiendas mapeadas desde el objeto de la Macro
+                    // CONFIGURACIÓN DEL PROMPT AUTOMÁTICO PARA GEMINI
+                    const promptIA = encodeURIComponent(
+                        `Dame la ficha técnica resumida del producto "${nombreProducto}" de Xiaomi. ` +
+                        `Incluye las 4 características clave más importantes (ej: pantalla, procesador, cámara, batería, etc.) ` +
+                        `y un argumento de venta rápido y persuasivo para ayudarme a asesorar a un cliente en tienda.`
+                    );
+                    
+                    // Enlace directo que abre Gemini Web con la pregunta lista
+                    btnConsultarIA.href = `https://gemini.google.com/app?prompt=${promptIA}`;
+
                     const tiendas = [
                         { id: 'totalStock', nombre: 'Disponibilidad Global Total', esp: false },
                         { id: 'agt400', nombre: '🏪 BODEGA PRINCIPAL (AGT-400)', esp: true },
@@ -357,7 +410,6 @@
             });
         }
 
-        // Buscador Inteligente en tiempo real
         txtBuscar.addEventListener('input', (e) => {
             const t = e.target.value.toLowerCase().trim();
             if (typeof productos === 'undefined') return;
@@ -367,7 +419,6 @@
 
         function cerrarModal() { modalStock.style.display = 'none'; }
 
-        // Inicialización segura sin ventanas globales trancadas
         window.addEventListener('DOMContentLoaded', () => {
             if (typeof productos !== 'undefined') {
                 renderizarProductos(productos.slice(0, 30));
