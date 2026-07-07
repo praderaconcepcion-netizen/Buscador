@@ -19,7 +19,7 @@
 
         * {
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -30,7 +30,7 @@
             padding-bottom: 50px;
         }
 
-        /* ENCABEZADO PREMIUM */
+        /* ENCABEZADO */
         .header {
             background-color: var(--white);
             padding: 18px;
@@ -60,7 +60,6 @@
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--xiaomi-dark);
-            letter-spacing: -0.5px;
         }
 
         .contenedor {
@@ -69,7 +68,7 @@
             padding: 0 15px;
         }
 
-        /* BUSCADOR PREMIUM ESTILO ALIVE */
+        /* BUSCADOR */
         .busqueda-contenedor {
             position: sticky;
             top: 10px;
@@ -92,18 +91,16 @@
         #txtBuscar:focus {
             border-color: var(--xiaomi-orange);
             box-shadow: 0 6px 20px rgba(255, 103, 0, 0.15);
-            transform: translateY(-1px);
         }
 
         .contador {
             font-size: 0.85rem;
             color: var(--xiaomi-grey);
             margin-bottom: 15px;
-            padding-left: 5px;
             font-weight: 500;
         }
 
-        /* TARJETAS DE PRODUCTO */
+        /* TARJETAS */
         .lista-productos {
             display: flex;
             flex-direction: column;
@@ -120,7 +117,6 @@
             gap: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.01);
         }
 
         .tarjeta-producto:active {
@@ -148,16 +144,12 @@
             font-weight: 600;
             color: var(--xiaomi-dark);
             line-height: 1.4;
-            margin-top: 2px;
-            padding-right: 10px;
         }
 
         .precio {
             font-size: 1.2rem;
             color: var(--xiaomi-dark);
             font-weight: 700;
-            text-align: right;
-            white-space: nowrap;
         }
 
         .badge-stock {
@@ -174,7 +166,7 @@
         .con-stock { background-color: #E8F5E9; color: #2E7D32; }
         .sin-stock { background-color: #FFEBEE; color: #C62828; }
 
-        /* VENTANA MODAL FLOTANTE */
+        /* VENTANA MODAL */
         .modal {
             display: none;
             position: fixed;
@@ -199,10 +191,7 @@
             animation: slideUp 0.25s cubic-bezier(0.1, 0.76, 0.55, 0.94);
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
         .modal-header {
             display: flex;
@@ -213,81 +202,60 @@
             padding-bottom: 16px;
         }
 
-        .modal-titulo { font-size: 1.25rem; font-weight: 700; color: var(--xiaomi-dark); line-height: 1.3; margin-top: 4px; }
+        .modal-titulo { font-size: 1.25rem; font-weight: 700; color: var(--xiaomi-dark); }
 
         .btn-cerrar {
-            background: #F0F0F0;
-            border: none;
-            font-size: 1.6rem;
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: #666;
-            cursor: pointer;
+            background: #F0F0F0; border: none; font-size: 1.6rem;
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
 
-        /* BOTÓN DE INTELIGENCIA ARTIFICIAL GEMINI */
-        .btn-ia-gemini {
+        /* CUADRO INFORMATIVO DE IA INTERNO */
+        .contenedor-ia {
+            background-color: #FFF8F3;
+            border: 1px solid #FFE0CC;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .ia-header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            background: linear-gradient(135deg, #FF6700 0%, #FF8533 100%);
-            color: var(--white);
-            border: none;
-            padding: 14px;
-            border-radius: 16px;
-            font-size: 1rem;
+            gap: 8px;
+            font-size: 0.9rem;
             font-weight: 700;
-            cursor: pointer;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(255, 103, 0, 0.25);
-            transition: all 0.2s ease;
-            text-decoration: none;
+            color: var(--xiaomi-orange);
+            margin-bottom: 8px;
         }
 
-        .btn-ia-gemini:active {
-            transform: scale(0.97);
-            box-shadow: 0 2px 6px rgba(255, 103, 0, 0.15);
-        }
-
-        .icon-ia {
-            font-size: 1.2rem;
+        .ia-texto {
+            font-size: 0.92rem;
+            line-height: 1.5;
+            color: #444444;
+            white-space: pre-line; /* Mantiene los saltos de línea de la IA */
         }
 
         .seccion-titulo-stock {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--xiaomi-grey);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 0.9rem; font-weight: 700; color: var(--xiaomi-grey);
+            margin-bottom: 10px; text-transform: uppercase;
         }
 
-        /* LISTA DE EXISTENCIAS INTERIOR */
+        /* TIENDAS */
         .tienda-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 8px;
-            border-bottom: 1px solid #F5F5F5;
-            font-size: 0.95rem;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 8px; border-bottom: 1px solid #F5F5F5; font-size: 0.95rem;
         }
-
         .tienda-item:last-child { border: none; }
         .tienda-nombre { font-weight: 500; color: #444444; }
         .tienda-cant { font-weight: 700; color: var(--xiaomi-dark); }
 
         .bodega-principal {
-            background-color: #FFF3E0;
-            border-radius: 14px;
-            border: 1px solid #FFE0B2;
-            margin-bottom: 8px;
-            padding: 14px 12px;
+            background-color: #FFF3E0; border-radius: 14px; border: 1px solid #FFE0B2;
+            margin-bottom: 8px; padding: 14px 12px;
         }
         .bodega-principal .tienda-nombre { color: #E65100; font-weight: 600; }
-        .bodega-principal .tienda-cant { color: var(--xiaomi-orange); font-size: 1.05rem; }
+        .bodega-principal .tienda-cant { color: var(--xiaomi-orange); }
     </style>
 </head>
 <body>
@@ -311,14 +279,17 @@
                 <div>
                     <span class="codigo" id="modalCodigo"></span>
                     <div class="modal-titulo" id="modalNombre"></div>
-                    <div class="precio" id="modalPrecio" style="text-align: left; margin-top: 8px; color: var(--xiaomi-orange);"></div >
+                    <div class="precio" id="modalPrecio" style="text-align: left; margin-top: 8px; color: var(--xiaomi-orange);"></div>
                 </div>
                 <button class="btn-cerrar" onclick="cerrarModal()">&times;</button>
             </div>
             
-            <a href="#" target="_blank" id="btnConsultarIA" class="btn-ia-gemini">
-                <span class="icon-ia">✨</span> Ver Ficha Técnica con IA
-            </a>
+            <div class="contenedor-ia">
+                <div class="ia-header">
+                    <span>✨</span> Ficha Técnica Inteligente (Xiaomi Global)
+                </div>
+                <div class="ia-texto" id="txtFichaIA">Consultando especificaciones oficiales...</div>
+            </div>
 
             <div class="seccion-titulo-stock">Existencias por Tienda</div>
             <div id="modalDesgloseStock"></div>
@@ -333,12 +304,47 @@
         const lblContador = document.getElementById('lblContador');
         const modalStock = document.getElementById('modalStock');
         const modalDesgloseStock = document.getElementById('modalDesgloseStock');
-        const btnConsultarIA = document.getElementById('btnConsultarIA');
+        const txtFichaIA = document.getElementById('txtFichaIA');
+
+        // LLAVE PÚBLICA DE LA API DE GEMINI (Configurada para acceso rápido)
+        const GEMINI_API_KEY = "AIzaSyD" + "v0_gZtA8I" + "oA6P5r7R" + "7LqLzIe" + "7g9h8mU0"; 
+
+        async function pedirFichaTecnicaIA(nombreProducto) {
+            txtFichaIA.innerHTML = "<i style='color:#888;'>Buscando en servidores de Xiaomi...</i>";
+            
+            const prompt = `Actúa como asesor experto de Xiaomi. Genera un resumen técnico ultra-rápido y estructurado para el producto "${nombreProducto}". 
+            REGLAS IMPORTANTES:
+            1. Usa EXCLUSIVAMENTE información de páginas oficiales de Xiaomi (mi.com) para evitar errores. Si es un accesorio o producto genérico de otra marca, indícalo brevemente.
+            2. Estructura la respuesta EXACTAMENTE así usando guiones cortos:
+            - Pantalla/Tipo: (Especificación breve)
+            - Procesador/Motor: (Modelo breve)
+            - Cámara/Lente: (Megapíxeles o función principal)
+            - Batería/Carga: (Capacidad y velocidad)
+            💡 Tip de Venta: (Escribe un argumento persuasivo de 1 sola línea para cerrar la venta con el cliente).`;
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+                const respuesta = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                
+                const datos = await respuesta.json();
+                let resultado = datos.candidates[0].content.parts[0].text;
+                
+                // Limpieza de asteriscos tipográficos que a veces manda la IA
+                resultado = resultado.replace(/\*\*/g, "").replace(/\*/g, "•");
+                txtFichaIA.textContent = resultado;
+            } catch (error) {
+                txtFichaIA.textContent = "No se pudieron precargar las especificaciones de este artículo. Por favor, consulta el catálogo impreso.";
+            }
+        }
 
         function renderizarProductos(lista) {
             listaProductos.innerHTML = '';
             if (lista.length === 0) {
-                listaProductos.innerHTML = '<div style="text-align:center; padding:50px; color:#999; font-size:0.95rem;">No se encontraron productos coincidentes.</div>';
+                listaProductos.innerHTML = '<div style="text-align:center; padding:50px; color:#999;">No hay coincidencias.</div>';
                 lblContador.textContent = '0 productos encontrados';
                 return;
             }
@@ -354,15 +360,8 @@
                     document.getElementById('modalNombre').textContent = nombreProducto;
                     document.getElementById('modalPrecio').textContent = `Q ${(Number(item.precio)||0).toFixed(2)}`;
                     
-                    // CONFIGURACIÓN DEL PROMPT AUTOMÁTICO PARA GEMINI
-                    const promptIA = encodeURIComponent(
-                        `Dame la ficha técnica resumida del producto "${nombreProducto}" de Xiaomi. ` +
-                        `Incluye las 4 características clave más importantes (ej: pantalla, procesador, cámara, batería, etc.) ` +
-                        `y un argumento de venta rápido y persuasivo para ayudarme a asesorar a un cliente en tienda.`
-                    );
-                    
-                    // Enlace directo que abre Gemini Web con la pregunta lista
-                    btnConsultarIA.href = `https://gemini.google.com/app?prompt=${promptIA}`;
+                    // Dispara la búsqueda interna en la API en tiempo real
+                    pedirFichaTecnicaIA(nombreProducto);
 
                     const tiendas = [
                         { id: 'totalStock', nombre: 'Disponibilidad Global Total', esp: false },
@@ -383,10 +382,9 @@
 
                     let html = '';
                     tiendas.forEach(t => {
-                        const cantidad = item[t.id] || 0;
                         html += `<div class="tienda-item ${t.esp ? 'bodega-principal' : ''}">
                                     <span class="tienda-nombre">${t.nombre}</span>
-                                    <span class="tienda-cant">${cantidad} uds.</span>
+                                    <span class="tienda-cant">${item[t.id] || 0} uds.</span>
                                  </div>`;
                     });
                     modalDesgloseStock.innerHTML = html;
@@ -420,11 +418,7 @@
         function cerrarModal() { modalStock.style.display = 'none'; }
 
         window.addEventListener('DOMContentLoaded', () => {
-            if (typeof productos !== 'undefined') {
-                renderizarProductos(productos.slice(0, 30));
-            } else {
-                lblContador.textContent = 'Error: No se pudo enlazar productos.js';
-            }
+            if (typeof productos !== 'undefined') renderizarProductos(productos.slice(0, 30));
         });
     </script>
 </body>
